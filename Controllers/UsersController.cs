@@ -40,30 +40,36 @@ public class UsersController : ControllerBase
         }
     }
 
-    [HttpPost]
-    public ActionResult<User> Create(User user)
+  [HttpPost]
+public ActionResult<User> Create(User user)
+{
+    try
     {
-        try
+        // ASP.NET Core model validation (data annotations)
+        if (!ModelState.IsValid)
         {
-            var validationError = ValidateUser(user);
-
-            if (validationError is not null)
-            {
-                return BadRequest(validationError);
-            }
-
-            user.Name = user.Name.Trim();
-            user.Email = user.Email.Trim();
-            user.Id = _nextId++;
-            Users.Add(user);
-
-            return CreatedAtAction(nameof(GetById), new { id = user.Id }, user);
+            return BadRequest(ModelState);
         }
-        catch (Exception)
+
+        var validationError = ValidateUser(user);
+
+        if (validationError is not null)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred.");
+            return BadRequest(validationError);
         }
+
+        user.Name = user.Name.Trim();
+        user.Email = user.Email.Trim();
+        user.Id = _nextId++;
+        Users.Add(user);
+
+        return CreatedAtAction(nameof(GetById), new { id = user.Id }, user);
     }
+    catch (Exception)
+    {
+        return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred.");
+    }
+}
 
     [HttpPut("{id:int}")]
     public IActionResult Update(int id, User updatedUser)
