@@ -1,10 +1,21 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace UserManagementAPI.Models;
 
 public class User
 {
-	public int Id { get; set; }
-	public string Name { get; set; } = string.Empty;
-	public string Email { get; set; } = string.Empty;
-	public string Role { get; set; } = string.Empty;
-	public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public int Id { get; set; }
+
+    [Required]
+    [StringLength(50)]
+    public string Name { get; set; } = string.Empty;
+
+    [Required]
+    [EmailAddress]
+    public string Email { get; set; } = string.Empty;
+
+    [StringLength(50)]
+    public string Role { get; set; } = string.Empty;
+
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }
